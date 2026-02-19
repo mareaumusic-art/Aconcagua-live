@@ -315,15 +315,44 @@
     <input name="animation" type="hidden">
     <script>
       window.addEventListener("load", function() {
-        setTimeout(function() {
-          try {
-            var els = document.querySelectorAll(".mbr-parallax-background");
-            els.forEach(function(el) {
-              jarallaxDestroy(el);
-              jarallax(el, { speed: 0.6 });
-            });
-          } catch(e) {}
-        }, 500);
+        var sections = document.querySelectorAll(".mbr-parallax-background");
+        sections.forEach(function(section) {
+          // Hintergrundbild aus dem jarallax-Container holen
+          var img = section.querySelector(".jarallax-img") || section.querySelector("img");
+          var bgImage = window.getComputedStyle(section).backgroundImage;
+          
+          // Falls jarallax das Bild in einen Container verschoben hat
+          var jarallaxContainer = section.querySelector("[id^=jarallax-container]");
+          if (jarallaxContainer) {
+            var containerImg = jarallaxContainer.querySelector("img");
+            if (containerImg) {
+              bgImage = "url(" + containerImg.src + ")";
+            }
+          }
+          
+          window.addEventListener("scroll", function() {
+            var scrolled = window.pageYOffset;
+            var sectionTop = section.getBoundingClientRect().top + scrolled;
+            var sectionHeight = section.offsetHeight;
+            var windowHeight = window.innerHeight;
+            
+            // Nur wenn Section sichtbar
+            if (scrolled + windowHeight > sectionTop && scrolled < sectionTop + sectionHeight) {
+              var relativeScroll = (scrolled - sectionTop + windowHeight) / (sectionHeight + windowHeight);
+              var offset = (relativeScroll - 0.5) * sectionHeight * 0.4;
+              
+              if (jarallaxContainer) {
+                var containerInner = jarallaxContainer.querySelector("div, img");
+                if (containerInner) {
+                  containerInner.style.transform = "translate3d(0, " + offset + "px, 0)";
+                }
+              }
+            }
+          }, {passive: true});
+        });
+        
+        // Initial trigger
+        window.dispatchEvent(new Event("scroll"));
       });
     </script>
   </body>
