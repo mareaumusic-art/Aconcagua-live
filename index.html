@@ -314,13 +314,14 @@
  
     <input name="animation" type="hidden">
     <script>
-      window.addEventListener("scroll", function() {
-        if (typeof jarallax !== "undefined") {
-          document.querySelectorAll(".mbr-parallax-background").forEach(function(el) {
-            if (el._jarallax) { el._jarallax.onScroll(); }
+      document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
+          var els = document.querySelectorAll(".mbr-parallax-background");
+          els.forEach(function(el) {
+            jarallax(el, { speed: 0.6 });
           });
-        }
-      }, { passive: true });
+        }, 300);
+      });
     </script>
   </body>
 </html>
