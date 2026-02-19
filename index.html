@@ -314,13 +314,16 @@
  
     <input name="animation" type="hidden">
     <script>
-      document.addEventListener("DOMContentLoaded", function() {
+      window.addEventListener("load", function() {
         setTimeout(function() {
-          var els = document.querySelectorAll(".mbr-parallax-background");
-          els.forEach(function(el) {
-            jarallax(el, { speed: 0.6 });
-          });
-        }, 300);
+          try {
+            var els = document.querySelectorAll(".mbr-parallax-background");
+            els.forEach(function(el) {
+              jarallaxDestroy(el);
+              jarallax(el, { speed: 0.6 });
+            });
+          } catch(e) {}
+        }, 500);
       });
     </script>
   </body>
